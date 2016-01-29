@@ -1,0 +1,18 @@
+<ion-view view-title="Preferences">
+    <ion-content>
+        <h2 class="text-center">My allergies</h2>
+        <div class="list">
+            <label class="item item-input">
+                <input type="text" placeholder="I am allergic to.." ng-model="pref.text">   
+            </label>
+            <button ng-click="savePref()" class="button button-block button-positive">
+                Add Allergy
+            </button>
+        </div>
+        <ul class="list" ng-show="preferences">
+            <li class="item" ng-repeat="p in preferences">
+                {{p}}
+            </li>
+        </ul>
+    </ion-content>
+</ion-view>
