@@ -1,6 +1,6 @@
 // MyChat App - Ionic & Firebase Demo
 
-var firebaseUrl = "https://9390-uniapp.firebaseio.com/";
+var firebaseUrl = "https://barcodes.firebaseio.com/";
 
 var ref = new Firebase(firebaseUrl);
 
@@ -34,33 +34,33 @@ angular.module('mychat', ['ionic', 'ngCordova', 'firebase', 'angularMoment', 'my
         $rootScope.firebaseUrl = firebaseUrl;
         $rootScope.displayName = null;
 
-        // Auth.$onAuth(function(authData) {
-        //     if (authData) {
-        //         $rootScope.authData = authData;
-        //         console.log("Logged in as:", authData.uid);
-        //     } else {
-        //         console.log("Logged out");
-        //         $ionicLoading.hide();
-        //         $location.path('/login');
-        //     }
-        // });
+        Auth.$onAuth(function(authData) {
+            if (authData) {
+                $rootScope.authData = authData;
+                console.log("Logged in as:", authData.uid);
+            } else {
+                console.log("Logged out");
+                $ionicLoading.hide();
+                $location.path('/login');
+            }
+        });
 
-        // $rootScope.logout = function() {
-        //     console.log("Logging out from the app");
-        //     $ionicLoading.show({
-        //         template: 'Logging Out...'
-        //     });
-        //     Auth.$unauth();
-        // }
+        $rootScope.logout = function() {
+            console.log("Logging out from the app");
+            $ionicLoading.show({
+                template: 'Logging Out...'
+            });
+            Auth.$unauth();
+        }
 
 
-        // $rootScope.$on("$stateChangeError", function(event, toState, toParams, fromState, fromParams, error) {
-        //     // We can catch the error thrown when the $requireAuth promise is rejected
-        //     // and redirect the user back to the home page
-        //     if (error === "AUTH_REQUIRED") {
-        //         $location.path("/login");
-        //     }
-        // });
+        $rootScope.$on("$stateChangeError", function(event, toState, toParams, fromState, fromParams, error) {
+            // We can catch the error thrown when the $requireAuth promise is rejected
+            // and redirect the user back to the home page
+            if (error === "AUTH_REQUIRED") {
+                $location.path("/login");
+            }
+        });
     });
 })
 
@@ -77,16 +77,16 @@ angular.module('mychat', ['ionic', 'ngCordova', 'firebase', 'angularMoment', 'my
         url: "/login",
         templateUrl: "templates/login.html",
         controller: 'LoginCtrl',
-        // resolve: {
-        //     // controller will not be loaded until $waitForAuth resolves
-        //     // Auth refers to our $firebaseAuth wrapper in the example above
-        //     "currentAuth": ["Auth",
-        //         function(Auth) {
-        //             // $waitForAuth returns a promise so the resolve waits for it to complete
-        //             return Auth.$waitForAuth();
-        //         }
-        //     ]
-        // }
+        resolve: {
+            // controller will not be loaded until $waitForAuth resolves
+            // Auth refers to our $firebaseAuth wrapper in the example above
+            "currentAuth": ["Auth",
+                function(Auth) {
+                    // $waitForAuth returns a promise so the resolve waits for it to complete
+                    return Auth.$waitForAuth();
+                }
+            ]
+        }
     })
 
 
@@ -95,17 +95,17 @@ angular.module('mychat', ['ionic', 'ngCordova', 'firebase', 'angularMoment', 'my
         url: "/tab",
         abstract: true,
         templateUrl: "templates/tabs.html",
-        // resolve: {
-        //     // controller will not be loaded until $requireAuth resolves
-        //     // Auth refers to our $firebaseAuth wrapper in the example above
-        //     "currentAuth": ["Auth",
-        //         function(Auth) {
-        //             // $requireAuth returns a promise so the resolve waits for it to complete
-        //             // If the promise is rejected, it will throw a $stateChangeError (see above)
-        //             return Auth.$requireAuth();
-        //         }
-        //     ]
-        // }
+        resolve: {
+            // controller will not be loaded until $requireAuth resolves
+            // Auth refers to our $firebaseAuth wrapper in the example above
+            "currentAuth": ["Auth",
+                function(Auth) {
+                    // $requireAuth returns a promise so the resolve waits for it to complete
+                    // If the promise is rejected, it will throw a $stateChangeError (see above)
+                    return Auth.$requireAuth();
+                }
+            ]
+        }
     })
 
     // Each tab has its own nav history stack:
