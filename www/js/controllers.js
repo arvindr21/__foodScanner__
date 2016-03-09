@@ -182,16 +182,51 @@ angular.module('mychat.controllers', [])
                 // make a call to Firebase to /products and 
                 // pass the barcode to get its info
                 // ->
-                var product = {
-                    "name": "food2",
-                    "barcode": "098765432",
-                    "allergies": ["peanuts", "dairy"],
-                    "description": "asdf..."
+                var product1 = {
+                    "name": "nairns - gluten free wholegrain crackers",
+                    "barcode": "0612322030070",
+                    "allergies": ["Milk", "Nuts", "Avenin", "gluten"],
+                    "ingredients": "Wholegrain Oats (86%), Sustainable Palm Fruit Oil, Maize Starch, Sea Salt, Raising Agent (Ammonium bicarbonate), Honey",
+                    "suitable to consume": "Okay for you!, Not for you!"
                 };
 
+                var product2 = {
+                    "name": "Dairy Milk Whole Nut - Cadbury",
+                    "barcode": "7622300735951",
+                    "allergies": ["gluten", "nuts", "milk"],
+                    "ingredients": "Milk, sugar, roasted hazelnuts, cocoa butter, cocoa mass, vegetable fats (palm, shea), emulsifiers (E442, E476), flavourings",
+                    "suitable to consume": "Okay for you!, Not for you!"
+                };
+
+                var product3 = {
+                    "name": "Medium curry - Uncle ben's",
+                    "barcode": "4002359001758",
+                    "allergies": ["celery", "mustard"],
+                    "ingredients": "Water, tomatoes, onions (12%), red pepper (5%), cornflour, sugar, coconut (2.8%), lemon juice, roasted onion paste (2%) (onions, Sunflower oil, Salt), Sunflower oil, Spices, Salt, curry powder (0.8%) (contains celery, mustard), ginger, garlic",
+                    "suitable to consume": "Okay for you!, Not for you!"
+                };
+
+                var products = [product1, product2, product3];
+
+                // Get the scanned bardcode info.
+                var found = false;
+                var currProd;
+                for (var i = 0; i < products.length; i++) {
+                    if (products[i].barcode === barcode) {
+                        // we have a match
+                        $scope.currProd = currProd = products[i];
+                        found = true;
+                    }
+                }
+
+                if (!found) {
+                    Loader.toggleLoadingWithMessage('Oops we were not able to find the product. Contact our support team!');
+                    return false;
+                }
+
                 for (var i = 0; i < $scope.preferences.length; i++) {
-                    for (var j = 0; j < product.allergies.length; j++) {
-                        if ($scope.preferences[i] === product.allergies[j]) {
+                    for (var j = 0; j < currProd.allergies.length; j++) {
+                        if ($scope.preferences[i] === currProd.allergies[j]) {
                             matchedAllergies.push($scope.preferences[i]);
                         }
                     };
@@ -199,6 +234,15 @@ angular.module('mychat.controllers', [])
 
                 // If matchedAllergies.length > 0, he is allergic to
                 // matchedAllergies
+
+                if (matchedAllergies.length > 0) {
+                    // one matched allery
+                    Loader.toggleLoadingWithMessage('You could DIE :X. This product has ' + (matchedAllergies.join(' '))+ '.');
+                    return false;
+                } else {
+                    Loader.toggleLoadingWithMessage('This is good for your consumption. :)');
+                    return false;
+                }
 
             }, function(error) {
                 // An error occurred
